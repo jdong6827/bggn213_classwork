@@ -1,0 +1,89 @@
+---
+title: 'Class 9: Machine Learning 1'
+author: "Jiayi Dong"
+date: "2/5/2020"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## K-means clustering
+Let's try the `kmearns()` function in R to cluster some made-up example data.
+```{r}
+tmp <- c(rnorm(30,-3), rnorm(30,3))
+plot(tmp)
+x<-cbind(x=tmp, y<-rev(tmp))
+
+```
+Use kmeans() tfunction setting k to 2 and nstart=20
+
+```{r}
+km <- kmeans(x,centers = 2, nstart = 20)
+
+```
+Inspect/print the result of km
+```{r}
+km
+```
+
+
+```{r}
+attributes(km)
+
+```
+Q: How many points are in each cluster?
+```{r}
+km$size
+
+```
+Q: What 'component' of your result object details
+-cluster size?
+-cluster assignment/membership?
+-cluster center?
+```{r}
+km$size
+km$iter
+km$centers
+km$cluster
+```
+Plot x colored by the kmeans cluster assignment and
+add cluster centers as blue points
+```{r}
+plot(x,col=c(rep("red",30),rep("green",30)))
+points(km$centers, col="blue", pch=1, cex=1)
+```
+
+## Hierarchiacal clustering in R
+
+The`hclust()`function is the main Hierarchical clustering method in R and it **must** be passed a *distance matrix* as input, not the raw data!
+
+```{r}
+hc <- hclust(dist(x))
+```
+
+You can also ask `cutree()`for the `k` number of groups that you want
+```{r}
+cutree(hc,k=5)
+```
+
+
+
+## Practice PCA analysis
+
+```{r}
+x <- read.csv("https://bioboot.github.io/bggn213_f17/class-material/UK_foods.csv",row.names = 1)
+```
+
+
+
+```{r}
+pca <- prcomp(t(x))
+pca
+```
+```{r}
+attributes(pca)
+plot(pca$x[,1],pca$x[,2])
+```
+
