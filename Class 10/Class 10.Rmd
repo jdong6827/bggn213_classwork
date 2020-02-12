@@ -2,7 +2,7 @@
 title: 'Class 10: Machine Learning Project'
 author: "Jiayi Dong"
 date: "2/7/2020"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -42,9 +42,7 @@ table(wisCan.df$diagnosis)
 grep("mean",colnames(wisCan.df), value=TRUE)
 ```
 
-```{r}
-round(apply(wisCan.data,2,sd),2)
-```
+
 ```{r}
 pca <- prcomp(wisCan.data,scale=TRUE)
 summary(pca)
