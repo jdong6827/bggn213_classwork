@@ -7,9 +7,112 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## PDB Statistics
+## 1.PDB Statistics
+
+Download a CSV file from the PDB site (accessible from “Analyze” > “PDB Statistics” > “by Experimental Method and Molecular Type”. Move this CSV file into your RStudio project and use it to answer the following questions:
+
+>Q: What percentage of structures in the PDB are solved by X-Ray and Electron Microscopy.
 
 ```{r}
+stats<-read.csv("Data Export Summary.csv",row.names = 1)
+per<-round(stats$Total/sum(stats$Total)*100,2)
+#Alternative: per<-stats[,"Total"]/sum(stats[,"Total"])
+names(per)<-rownames(stats)
+per
+```
+A: X-Ray:88.95 Electron Microscopy: 2.72
+>Q: What proportion of structures in the PDB are protein?
 
+```{r} 
+per.protein<-round(sum(stats$Proteins)/sum(stats$Total)*100,2)
+per.protein
+```
+A: 92.69%
+
+>Q: Type HIV in the PDB website search box on the home page and determine how many HIV-1 protease structures are in the current PDB?
+
+A: 1,298
+
+## 2.Using bio3d to analyse protein structure data
+
+Use the bio3d package from CRAN.
+
+```{r}
+library(bio3d)
+pdb<-read.pdb("1hsg")
+pdb
+```
+
+```{r}
+attributes(pdb)
+```
+```{r}
+## check installed packages
+#   installed.packages()
+
+## install packages from CRAN
+#install.packages("ggplot2") 
+#install.packages("ggrepel")
+#install.packages("devtools")
+#install.packages("BiocManager")
+
+## install packages from BioCondo
+#BiocManager::install("msa")
+
+## install packages from github
+#devtools::install_bitbucket("Grantlab/bio3d-view")
+```
+
+Adenylate kinase structures from the PDB for analysis
+
+```{r}
+hits <- NULL
+hits$pdb.id <- c('1AKE_A','4X8M_A','6S36_A','6RZE_A','4X8H_A','3HPR_A','1E4V_A','5EJE_A','1E4Y_A','3X2S_A','6HAP_A','6HAM_A','4K46_A','4NP6_A','3GMT_A','4PZL_A')
+
+```
+
+Download and parse these structures
+```{r}
+##Download related PDB files
+#files <- get.pdb(hits$pdb.id, path="pdbs", split=TRUE, gzip=TRUE)
+```
+
+```{r}
+# Align releated PDBs
+pdbs <- pdbaln(files, fit = TRUE, exefile="msa")
+```
+```{r}
+# Vector containing PDB codes for figure axis
+ids <- basename.pdb(pdbs$id)
+
+# Draw schematic alignment
+plot(pdbs, labels=ids)
+```
+
+```{r}
+library(bio3d.view)
+library(rgl)
+```
+
+
+```{r}
+library(rgl)
+view(pdbs)
+rglwidget(elementId = "plot3drgl")
+```
+
+```{r}
+pc<-pca(pdbs)
+plot(pc)
+```
+
+```{r}
+plot(pc,1:2)
+```
+
+Make a PCA trajectory
+
+```{r}
+pc1 <- mktrj(pc, pc=1, file="pc_1.pdb")
 ```
 
