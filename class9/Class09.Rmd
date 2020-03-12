@@ -82,6 +82,7 @@ x <- read.csv("https://bioboot.github.io/bggn213_f17/class-material/UK_foods.csv
 pca <- prcomp(t(x))
 pca
 ```
+
 ```{r}
 attributes(pca)
 plot(pca$x[,1],pca$x[,2])
