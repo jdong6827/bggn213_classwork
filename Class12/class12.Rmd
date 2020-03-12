@@ -68,7 +68,6 @@ Adenylate kinase structures from the PDB for analysis
 ```{r}
 hits <- NULL
 hits$pdb.id <- c('1AKE_A','4X8M_A','6S36_A','6RZE_A','4X8H_A','3HPR_A','1E4V_A','5EJE_A','1E4Y_A','3X2S_A','6HAP_A','6HAM_A','4K46_A','4NP6_A','3GMT_A','4PZL_A')
-
 ```
 
 Download and parse these structures

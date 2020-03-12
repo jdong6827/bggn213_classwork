@@ -15,13 +15,11 @@ Let's try the `kmearns()` function in R to cluster some made-up example data.
 tmp <- c(rnorm(30,-3), rnorm(30,3))
 plot(tmp)
 x<-cbind(x=tmp, y<-rev(tmp))
-
 ```
 Use kmeans() tfunction setting k to 2 and nstart=20
 
 ```{r}
 km <- kmeans(x,centers = 2, nstart = 20)
-
 ```
 Inspect/print the result of km
 ```{r}

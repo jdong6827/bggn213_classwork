@@ -11,7 +11,6 @@ The data itself comes from the Wisconsin Breast Cancer Diagnostic Data Set first
 
 ```{r}
 wisCan.df<- read.csv("https://bioboot.github.io/bimm143_S18/class-material/WisconsinCancer.csv")
-
 ```
 
 
