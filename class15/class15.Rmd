@@ -41,7 +41,7 @@ summary(expr[expr$geno=="A/G",]$exp)
 summary(expr[expr$geno=="A/A",]$exp)
 
 ```
-## Boxplot
+## Box plot
 
 We will use the `boxplot()` function and the input data will be **expr**
 ```{r}
