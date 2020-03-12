@@ -17,13 +17,20 @@ virus <- read.csv(url)
 tail(virus)
 ```
 
-    ##      Province.State Country.Region     Lat     Long       date cases      type
-    ## 2675         Shanxi Mainland China 37.5777 112.2922 2020-03-03     5 recovered
-    ## 2676        Sichuan Mainland China 30.6171 102.7103 2020-03-03     8 recovered
-    ## 2677        Tianjin Mainland China 39.3054 117.3230 2020-03-03    13 recovered
-    ## 2678       Xinjiang Mainland China 41.1129  85.2401 2020-03-03     2 recovered
-    ## 2679         Yunnan Mainland China 24.9740 101.4870 2020-03-03     1 recovered
-    ## 2680       Zhejiang Mainland China 29.1832 120.0934 2020-03-03    24 recovered
+    ##      Province.State      Country.Region     Lat     Long       date cases
+    ## 3622       Shanghai      Mainland China 31.2020 121.4491 2020-03-10     4
+    ## 3623         Shanxi      Mainland China 37.5777 112.2922 2020-03-10     4
+    ## 3624        Sichuan      Mainland China 30.6171 102.7103 2020-03-10    12
+    ## 3625         Taiwan Taipei and environs 23.7000 121.0000 2020-03-10     2
+    ## 3626        Tianjin      Mainland China 39.3054 117.3230 2020-03-10     1
+    ## 3627       Zhejiang      Mainland China 29.1832 120.0934 2020-03-10    15
+    ##           type
+    ## 3622 recovered
+    ## 3623 recovered
+    ## 3624 recovered
+    ## 3625 recovered
+    ## 3626 recovered
+    ## 3627 recovered
 
 > Q1. How many total infected cases are there around the world?
 
@@ -31,7 +38,7 @@ tail(virus)
 sum(virus$cases)
 ```
 
-    ## [1] 144233
+    ## [1] 187075
 
 ``` r
 table(virus$type)
@@ -39,7 +46,7 @@ table(virus$type)
 
     ## 
     ## confirmed     death recovered 
-    ##      1461       194      1025
+    ##      2112       274      1241
 
 > Q2. How many deaths linke to infected cases have there been?
 
@@ -48,7 +55,7 @@ inds<- virus$type=="death"
 sum(virus$cases[inds]) # sum(virus[inds,"case"])
 ```
 
-    ## [1] 3160
+    ## [1] 4262
 
 > Q3. What is the overall death rate?
 
@@ -56,7 +63,7 @@ sum(virus$cases[inds]) # sum(virus[inds,"case"])
 sum(virus$case[inds])/sum(virus$case)*100
 ```
 
-    ## [1] 2.190899
+    ## [1] 2.278231
 
 > Q4. What is the death rate in “Mainland China”?
 
@@ -74,7 +81,7 @@ death_rate <- total_death/total_case*100
 round(death_rate,2)
 ```
 
-    ## [1] 2.26
+    ## [1] 2.18
 
 > Q5. What is the death rate in Italy, Iran and the US?
 
@@ -100,16 +107,16 @@ round(death_rate,2)
 covidDR("Italy")
 ```
 
-    ## [1] 2.88
+    ## [1] 5.49
 
 ``` r
 covidDR("Iran")
 ```
 
-    ## [1] 2.85
+    ## [1] NaN
 
 ``` r
 covidDR("US")
 ```
 
-    ## [1] 5.11
+    ## [1] 3.45
