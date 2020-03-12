@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-## Read sample genotypes data from ENSEMBLE
+# Read sample genotypes data from ENSEMBLE
 
 We downloaded genotype data from ENSEMBLE on the MXL mexican Ancestry in Los Angeles, CA.
 
