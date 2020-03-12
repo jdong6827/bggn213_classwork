@@ -21,7 +21,6 @@ We will use `read.pdb()`, `atom.select()` and `write.pdb()` functions to make ou
 
 ```{r}
 pdb<-read.pdb(file.name)
-
 ```
 
 ```{r}

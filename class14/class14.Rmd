@@ -31,7 +31,6 @@ We will first extract the control columns by lookin up their names in the `metad
 control <- metadata[metadata$dex=="control",]
 # access id of control samples
 control_id<- metadata[metadata$dex=="control",]$id
-
 ```
 
 ```{r}
