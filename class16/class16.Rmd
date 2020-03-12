@@ -169,6 +169,7 @@ head(keggres$less)
 pathview(gene.data=foldchanges, pathway.id="hsa04110")
 
 ```
+
 ```{r}
 knitr::include_graphics("hsa04110.pathview.png")
 
