@@ -12,7 +12,7 @@ Class06: Why, when and how of writing your own R functions
 
 Class07: Bioinformatics R packages from CRAN and BioConductor
 
-Class08: [Machine Learning for Bioinformatics 1] (https://github.com/jdong6827/bggn213_classwork/blob/master/class9/Class09.md
+Class08: [Machine Learning for Bioinformatics 1](https://github.com/jdong6827/bggn213_classwork/blob/master/class9/Class09.md
 ) 
 
 Class09: [Machine learning project](https://github.com/jdong6827/bggn213_classwork/blob/master/class10/class10.md)
