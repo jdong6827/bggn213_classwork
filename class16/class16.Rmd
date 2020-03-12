@@ -16,6 +16,7 @@ Trapnell C, Hendrickson DG, Sauvageau M, Goff L et al. "Differential analysis of
 ```{r}
 colData=read.csv("https://bioboot.github.io/bggn213_W20/class-material/GSE37704_metadata.csv",1)
 head(colData)
+
 ```
 
 ```{r}
