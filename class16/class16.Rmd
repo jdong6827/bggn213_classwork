@@ -21,7 +21,6 @@ head(colData)
 
 ```{r}
 raw.countData=read.csv("https://bioboot.github.io/bggn213_W20/class-material/GSE37704_featurecounts.csv",row.names = 1)
-head(countData)
 ```
 ```{r}
 #remove length column
@@ -56,6 +55,7 @@ identical(trimCount,trim.Count)
 
 ## Running DESeq2
 ```{r}
+library(DESeq2)
 dds=DESeqDataSetFromMatrix(countData = trim.Count,colData = colData, design = ~condition)
 dds=DESeq(dds)
 ```
