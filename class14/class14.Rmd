@@ -15,6 +15,7 @@ metadata <- read.csv("https://bioboot.github.io/bimm143_W18/class-material/airwa
 ```{r}
 head(counts)
 ```
+
 How many genes are we dealing with?
 
 ```{r}
@@ -74,7 +75,6 @@ plot(mycounts, log="xy")
 ```{r}
 x<-data.frame(c(1,2,4,0),c(4,3,0,0))
 which(x==0,arr.ind = TRUE)[,"row"]
-
 
 ```
 find zero rows in our mycounts object
