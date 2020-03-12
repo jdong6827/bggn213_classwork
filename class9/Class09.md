@@ -13,7 +13,7 @@ tmp <- c(rnorm(30,-3), rnorm(30,3))
 plot(tmp)
 ```
 
-![](Class09_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+![](class09_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
 ``` r
 x<-cbind(x=tmp, y<-rev(tmp))
@@ -35,16 +35,16 @@ km
     ## 
     ## Cluster means:
     ##           x          
-    ## 1 -3.125541  2.806365
-    ## 2  2.806365 -3.125541
+    ## 1  2.951414 -2.796111
+    ## 2 -2.796111  2.951414
     ## 
     ## Clustering vector:
-    ##  [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2
-    ## [39] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1
+    ## [39] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
     ## 
     ## Within cluster sum of squares by cluster:
-    ## [1] 58.49426 58.49426
-    ##  (between_SS / total_SS =  90.0 %)
+    ## [1] 58.66016 58.66016
+    ##  (between_SS / total_SS =  89.4 %)
     ## 
     ## Available components:
     ## 
@@ -90,15 +90,15 @@ km$centers
 ```
 
     ##           x          
-    ## 1 -3.125541  2.806365
-    ## 2  2.806365 -3.125541
+    ## 1  2.951414 -2.796111
+    ## 2 -2.796111  2.951414
 
 ``` r
 km$cluster
 ```
 
-    ##  [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2
-    ## [39] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+    ##  [1] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1
+    ## [39] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
 
 Plot x colored by the kmeans cluster assignment and add cluster centers
 as blue points
@@ -108,7 +108,7 @@ plot(x,col=c(rep("red",30),rep("green",30)))
 points(km$centers, col="blue", pch=1, cex=1)
 ```
 
-![](Class09_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](class09_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ## Hierarchiacal clustering in R
 
@@ -127,8 +127,8 @@ You can also ask `cutree()`for the `k` number of groups that you
 cutree(hc,k=5)
 ```
 
-    ##  [1] 1 1 2 1 1 2 1 2 1 2 1 2 1 1 1 1 2 2 2 1 1 1 2 2 1 2 1 2 2 2 3 4 4 5 4 5 3 3
-    ## [39] 5 5 5 3 3 3 5 5 5 5 4 5 3 5 3 5 4 5 5 3 5 5
+    ##  [1] 1 2 1 2 1 1 2 2 1 1 1 2 2 2 1 2 1 1 1 2 2 1 2 1 1 2 1 1 1 2 3 4 5 4 3 4 5 3
+    ## [39] 5 3 3 4 5 5 3 5 3 3 3 5 5 4 3 3 4 5 3 4 3 5
 
 ## Practice PCA analysis
 
@@ -178,4 +178,4 @@ attributes(pca)
 plot(pca$x[,1],pca$x[,2])
 ```
 
-![](Class09_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](class09_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
