@@ -1,6 +1,6 @@
 # BGGN213_classwork
 
-This is my classwork from [BGGN 213 Winter 2020](https://bioboot.github.io/bggn213_W20/) at UC San Diego.The main class homepage is [here](https://github.com/jdong6827/bggn213_classwork).
+This is my classwork from [BGGN 213 Winter 2020](https://bioboot.github.io/bggn213_W20/) at UC San Diego.The main class homepage is [here](https://jdong6827.github.io/bggn213_classwork/).
 
 
 
