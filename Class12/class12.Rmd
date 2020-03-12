@@ -74,6 +74,7 @@ hits$pdb.id <- c('1AKE_A','4X8M_A','6S36_A','6RZE_A','4X8H_A','3HPR_A','1E4V_A',
 Download and parse these structures
 ```{r}
 ##Download related PDB files
+##Excecute in R Console
 #files <- get.pdb(hits$pdb.id, path="pdbs", split=TRUE, gzip=TRUE)
 ```
 
