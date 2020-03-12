@@ -3,7 +3,11 @@ Class 10: Machine Learning Project
 Jiayi Dong
 2/7/2020
 
-## The goal of this session is to explore a complete analysis using the unsupervised learning techniques covered in the last class. We’ll extend what we’ve learned by combining PCA as a preprocessing step to clustering using data that consist of measurements of cell nuclei of human breast masses.
+The goal of this session is to explore a complete analysis using the
+unsupervised learning techniques covered in the last class. We’ll extend
+what we’ve learned by combining PCA as a preprocessing step to
+clustering using data that consist of measurements of cell nuclei of
+human breast masses.
 
 The data itself comes from the Wisconsin Breast Cancer Diagnostic Data
 Set first reported by K. P. Benne and O. L. Mangasarian: “Robust Linear
