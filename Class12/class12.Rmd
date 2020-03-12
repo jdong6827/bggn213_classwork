@@ -74,7 +74,7 @@ Download and parse these structures
 ```{r}
 ##Download related PDB files
 ##Excecute in R Console
-#files <- get.pdb(hits$pdb.id, path="pdbs", split=TRUE, gzip=TRUE)
+files <- get.pdb(hits$pdb.id, path="pdbs", split=TRUE, gzip=TRUE)
 ```
 
 ```{r}
