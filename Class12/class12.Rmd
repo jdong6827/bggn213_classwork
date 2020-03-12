@@ -46,6 +46,7 @@ pdb
 ```{r}
 attributes(pdb)
 ```
+
 ```{r}
 ## check installed packages
 #   installed.packages()
@@ -94,7 +95,6 @@ library(bio3d.view)
 library(rgl)
 ```
 
-
 ```{r}
 library(rgl)
 view(pdbs)
@@ -109,10 +109,11 @@ plot(pc)
 ```{r}
 plot(pc,1:2)
 ```
-
 Make a PCA trajectory
 
 ```{r}
 pc1 <- mktrj(pc, pc=1, file="pc_1.pdb")
 ```
+
+
 
