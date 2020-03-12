@@ -1,0 +1,50 @@
+---
+title: "Class 15: Genomics I"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Read sample genotypes data from ENSEMBLE
+
+We downloaded genotype data from ENSEMBLE on the MXL mexican Ancestry in Los Angeles, CA.
+
+What proportion of this data are G/G etc?
+
+```{r}
+mxl <- read.csv("373531-SampleGenotypes-Homo_sapiens_Variation_Sample_rs8067378.csv")
+head(mxl)
+```
+
+We want to look at the second column that contains the genotype information
+```{r}
+table(mxl$Genotype..forward.strand.)
+```
+
+## RNA-Seq result analysis for different genotypes of this SNP
+```{r}
+expr <- read.table("https://bioboot.github.io/bggn213_W20/class-material/rs8067378_ENSG00000172057.6.txt")
+head(expr)
+table(expr$geno)
+```
+
+```{r}
+mean(expr$exp[expr$geno=="G/G"])
+
+summary(expr[expr$geno=="G/G",]$exp)
+
+summary(expr[expr$geno=="A/G",]$exp)
+
+summary(expr[expr$geno=="A/A",]$exp)
+
+```
+## Boxplot
+
+We will use the `boxplot()` function and the input data will be **expr**
+```{r}
+boxplot(exp ~ geno, data=expr)
+```
+

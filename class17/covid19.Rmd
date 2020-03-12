@@ -1,0 +1,86 @@
+---
+title: "Class 17 COVID-19 Homework"
+output: github_document
+---
+
+
+## Coronavirus
+
+Here we analyze infection data for the 2019 novel Coronavirus COVID-19 (2019-nCoV) epidemic. The raw data is pulled from the Johns Hopkins University Center for Systems Science and Engineering (JHU CCSE) Coronavirus repository.
+
+A CSV file is available here https://github.com/RamiKrispin/coronavirus-csv
+
+
+```{r}
+url <- "https://tinyurl.com/COVID-2019"
+virus <- read.csv(url)
+tail(virus)
+```
+
+> Q1. How many total infected cases are there around the world?
+
+```{r}
+sum(virus$cases)
+```
+
+```{r}
+table(virus$type)
+```
+
+
+
+> Q2. How many deaths linke to infected cases have there been?
+
+```{r}
+inds<- virus$type=="death"
+sum(virus$cases[inds]) # sum(virus[inds,"case"])
+```
+
+> Q3. What is the overall death rate?
+
+```{r}
+sum(virus$case[inds])/sum(virus$case)*100
+
+```
+
+> Q4. What is the death rate in "Mainland China"?
+
+```{r}
+country <- virus$Country.Region=="Mainland China"
+
+total_case <- sum(virus$cases[country])
+
+country_death <- virus$type=="death" & virus$Country.Region=="Mainland China"
+
+total_death <- sum(virus$cases[country_death])
+
+death_rate <- total_death/total_case*100
+
+round(death_rate,2)
+```
+
+> Q5. What is the death rate in Italy, Iran and the US?
+
+```{r}
+# Define a function to calculate death rate for countries
+
+covidDR<-function(x){country <- virus$Country.Region==x
+
+total_case <- sum(virus$cases[country])
+
+country_death <- virus$type=="death" & virus$Country.Region==x
+
+total_death <- sum(virus$cases[country_death])
+
+death_rate <- total_death/total_case*100
+
+round(death_rate,2)
+}
+```
+
+```{r}
+# Calculate the death rates for Italy, Iran and the US
+covidDR("Italy")
+covidDR("Iran")
+covidDR("US")
+```

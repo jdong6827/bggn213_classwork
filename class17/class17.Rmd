@@ -1,0 +1,40 @@
+---
+title: "Class 17: Cytoscape Network Analysis"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(RCy3)
+library(igraph)
+library(RColorBrewer)
+```
+
+```{r}
+# Test the connection to Cytoscape.
+cytoscapePing()
+# Check the version
+cytoscapeVersionInfo()
+```
+
+```{r}
+g <- makeSimpleIgraph()
+createNetworkFromIgraph(g,"myGraph")
+```
+```{r}
+setVisualStyle("Marquee")
+
+```
+```{r}
+fig <- exportImage(filename="demo", type="png", height=350)
+knitr::include_graphics("./demo.png")
+
+```
+
+```{r}
+plot(g)
+```
+

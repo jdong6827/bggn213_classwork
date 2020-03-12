@@ -1,0 +1,91 @@
+---
+title: "Fina A Gene Assignment"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Q7. Generate a sequence identity based heatmap of your aligned sequences using R.
+
+If necessary convert your sequence alignment to the ubiquitous FASTA format (Seaview
+can read in clustal format and “Save as” FASTA format for example). Read this FASTA
+format alignment into R with the help of functions in the Bio3D package. Calculate a
+sequence identity matrix (again using a function within the Bio3D package). Then
+generate a heatmap plot and add to your report. Do make sure your labels are visible
+and not cut at the figure margins.
+
+```{r}
+library(bio3d)
+```
+
+Read in alignment fasta file.
+```{r}
+aln <- read.fasta("~/Downloads/muscle-I20200309-172315-0861-46774147-p2m.fst")
+```
+
+Calculate a sequence identity matrix.
+```{r}
+ide.mat <- seqidentity(aln)
+ide.mat
+```
+
+Plot heatmap of sequence identity matrix
+```{r}
+heatmap(ide.mat, symm =TRUE)
+```
+
+## Q8. Search the main protein structure database for the most similar atomic resolution structures to your aligned sequences.
+
+Using R/Bio3D (or an online blast server if you prefer), search the main protein
+structure database for the most similar atomic resolution structures to your aligned
+sequences.
+
+List the top 3 unique hits (i.e. not hits representing different chains from the same
+structure) along with their Evalue and sequence identity to your query. Please also add
+annotation details of these structures. For example include the annotation terms PDB
+identifier (structureId), Method used to solve the structure (experimentalTechnique),
+resolution (resolution), and source organism (source).
+HINT: You can use a single sequence from your alignment or generate a consensus
+sequence from your alignment using the Bio3D function consensus(). The Bio3D
+functions blast.pdb(), plot.blast() and pdb.annotate() are likely to be of most relevance
+for completing this task. Note that the results of blast.pdb() contain the hits PDB
+identifier (or pdb.id) as well as Evalue and identity. The results of pdb.annotate() contain
+the other annotation terms noted above.
+Note that if your consensus sequence has lots of gap positions then it will be better to
+use an original sequence from the alignment for your search of the PDB. In this case
+you could chose the sequence with the highest identity to all others in your alignment by
+calculating the row-wise maximum from your sequence identity matrix.
+
+
+```{r}
+cons <- consensus(aln)
+cons$seq
+```
+Consensus sequence has lots of gap positions, switch to use an original sequence from the alignment for the search of the PDB.
+
+Calculate the row-wise maximum from the sequence identity matrix.
+
+```{r}
+sum(ide.mat[,1])
+sum(ide.mat[,2])
+sum(ide.mat[,3])
+sum(ide.mat[,4])
+sum(ide.mat[,5])
+sum(ide.mat[,6])
+
+```
+Mouse sequence has the highest identity to all others.
+
+```{r}
+blast.pdb("SHSVFSVTIHMKETTIDGEELVKIGKLNLVDLAGSENIGRSGAVDKRAREAGNINQSLLTLGRVITALVERTPHIPYRESKLTRILQDSLGGRTRTSIIATISPASFNLEETLSTLEYAHRAKNIMNKPEVNQKLTKKALIKEYTEEIERLKRDLAAAREKNGVYISEESFRAMNGKVTVQEEQIVELVEKIAVLEEELSKATELFMDSKNELDQCKSDLQTKTQELETTQKHLQETKLQLVKEEYVSSALERTEKTLHDTASKLLNTVKE")
+
+```
+
+```{r}
+anotate.1 <- pdb.annotate("4ZCA")
+anotate.2<- pdb.annotate("4ZHI")
+anotate.3 <- pdb.annotate("3HQD")
+```
+

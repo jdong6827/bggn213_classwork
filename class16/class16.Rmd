@@ -1,0 +1,183 @@
+---
+title: "Class 16: Pathway Analysis from RNA-seq results"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##
+
+The data for for hands-on session comes from GEO entry: GSE37704, which is associated with the following publication:
+
+Trapnell C, Hendrickson DG, Sauvageau M, Goff L et al. "Differential analysis of gene regulation at transcript resolution with RNA-seq". Nat Biotechnol 2013 Jan;31(1):46-53. PMID: 23222703
+
+```{r}
+colData=read.csv("https://bioboot.github.io/bggn213_W20/class-material/GSE37704_metadata.csv",1)
+head(colData)
+```
+
+```{r}
+raw.countData=read.csv("https://bioboot.github.io/bggn213_W20/class-material/GSE37704_featurecounts.csv",row.names = 1)
+head(countData)
+```
+```{r}
+#remove length column
+
+countData <- raw.countData[,-1]
+head(countData)
+nrow(countData)
+```
+```{r}
+dim(countData)
+```
+
+# remove zero 
+
+```{r}
+trim.Count <- countData[rowSums(countData)!=0,]
+```
+
+
+```{r}
+na.rm <- unique(which(countData==0,arr.ind = TRUE)[,"row"])
+trimCount <- countData[-na.rm,]
+```
+
+```{r}
+identical(trimCount,trim.Count)
+```
+
+```{r}
+#? swap(countData[countData==0,],"NA")
+```
+
+## Running DESeq2
+```{r}
+dds=DESeqDataSetFromMatrix(countData = trim.Count,colData = colData, design = ~condition)
+dds=DESeq(dds)
+```
+
+```{r}
+results <- results(dds)
+
+```
+## Make a volcano plot of log2FoldChange
+```{r}
+mycols <- rep("gray",nrow(results))
+mycols[abs(results$log2FoldChange)>2] <-"blue"
+plot(results$log2FoldChange, -log(results$padj),col=mycols)
+abline(v=c(-2,2), col="black", lty=2)
+abline(h=-log(0.1), col="black", lty=2)
+
+```
+
+To add annotation to my gene list I will install some bioconductor packages 
+
+```{r}
+library("AnnotationDbi")
+library("org.Hs.eg.db")
+```
+
+```{r}
+columns(org.Hs.eg.db)
+```
+
+Let's map our ENSEMBLE gene ids to the more conventional gene gene SYMBOL
+
+```{r}
+results$symbol <- mapIds(org.Hs.eg.db,
+                         key=row.names(results),
+                         keytype = "ENSEMBL",
+                         column="SYMBOL",
+                         multiVals = "first")
+```
+```{r}
+results$entrez <- mapIds(org.Hs.eg.db,
+                         key=row.names(results),
+                         keytype = "ENSEMBL",
+                         column="ENTREZID",
+                         multiVals = "first")
+
+results$name <- mapIds(org.Hs.eg.db,
+                         key=row.names(results),
+                         keytype = "ENSEMBL",
+                         column="GENENAME",
+                         multiVals = "first")
+head(results)
+```
+
+Save annotated results 
+```{r}
+write.csv(results, file= "dds.result.csv" )
+```
+
+## Pathway Analysis
+
+Here we are going to use the gage package for pathway analysis. Once we have a list of enriched pathways, we're going to use the pathview package to draw pathway diagrams, shading the molecules in the pathway by their degree of up/down-regulation.
+
+# Install `gage` , `gageData` and `pathview` in Bioconda in R Console 
+```{r}
+library("pathview")
+library(gage)
+library(gageData)
+```
+
+```{r}
+# Focus on signaling and metabolic pathways only
+
+data(kegg.sets.hs)
+data(sigmet.idx.hs)
+
+kegg.sets.hs = kegg.sets.hs[sigmet.idx.hs]
+
+# Examine the first 3 pathways
+head(kegg.sets.hs, 3)
+
+```
+
+Our input will be a vector of fold change values with ENTREZ gene ids as names
+```{r}
+foldchanges= results$log2FoldChange
+names(foldchanges)=results$entrez
+head(foldchanges)
+```
+```{r}
+# Focus on signaling and metabolic pathways only
+kegg.sets.hs = kegg.sets.hs[sigmet.idx.hs]
+
+# Examine the first 3 pathways
+head(kegg.sets.hs, 3)
+```
+
+```{r}
+# Get the results
+keggres = gage(foldchanges, gsets=kegg.sets.hs)
+```
+
+```{r}
+attributes(keggres)
+
+```
+
+```{r}
+head(keggres$less)
+```
+
+```{r}
+pathview(gene.data=foldchanges, pathway.id="hsa04110")
+
+```
+```{r}
+knitr::include_graphics("hsa04110.pathview.png")
+
+```
+
+```{r}
+# try pathview
+
+pathview(gene.data=foldchanges, pathway.id="hsa04110", kegg.native=FALSE)
+
+```
+
