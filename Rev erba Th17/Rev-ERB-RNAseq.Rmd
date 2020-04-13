@@ -1,0 +1,358 @@
+---
+title: "Rev-Erba in Th17 RNA-seq Practice"
+output: github_document
+---
+## This is the RNA-seq data from Rev-ERBa Th17 paper published on Cell Reports.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(DESeq2)
+library(dplyr)
+```
+
+load count data from GEO database
+```{r}
+count<- read.csv("GSE122726 WTVSKO.csv",stringsAsFactors = FALSE,row.names = 1)
+rownames(count) <- gsub("\t", "", rownames(count))
+head(count)
+```
+
+Tidy up the counts data to exclude `zero` value
+```{r}
+filter.Count <- count[rowSums(count)!=0,]
+head(filter.Count)
+```
+
+Create a `meta` for metadata
+```{r}
+id <- colnames(filter.Count)
+```
+
+
+```{r}
+meta <- data.frame("id"=id[1:4], "condition" = c(rep("WT",2),rep("KO",2)), stringsAsFactors = FALSE)
+```
+
+
+```{r}
+dds <- DESeqDataSetFromMatrix(countData=filter.Count, 
+                              colData=meta, 
+                              design=~condition
+                              )
+#set WT as reference level
+dds$condition <- relevel(dds$condition, ref = "WT")
+
+```
+
+```{r}
+dds <- DESeq(dds)
+head(dds)
+```
+
+Get Deseq results
+
+```{r}
+res <- results(dds)
+summary(res)
+```
+
+Subset the DEG with adjust p value lower than 0.05
+```{r}
+resAdjSig05 <- subset(as.data.frame(res),padj <0.05)
+head(resAdjSig05)
+```
+
+
+```{r}
+resAdjSig05up <- subset(resAdjSig05,resAdjSig05$log2FoldChange>0)
+resAdjSig05down <- subset(resAdjSig05,resAdjSig05$log2FoldChange<0)
+head(resAdjSig05up)
+head(resAdjSig05down)
+```
+
+Save result with DE gene ordered by padj
+```{r}
+write.csv(resAdjSig05, "adjsignif05_results.csv")
+write.csv(resAdjSig05up, "adjsignif05_results_up.csv")
+write.csv(resAdjSig05down, "adjsignif05_results_down.csv")
+
+```
+
+
+
+##Plot Deseq Result
+
+#MA-plot
+```{r}
+# unshrunken
+plotMA(res,ylim=c(-2,2))
+```
+
+```{r}
+#Shrunken
+res_shrink <- lfcShrink(dds, contrast=c("condition","KO","WT"), res=res)
+plotMA(res_shrink,ylim=c(-2,2))
+```
+```{r}
+#plot p-value distribution
+hist(resAdjSig05$pvalue)
+```
+
+```{r}
+# Plot dispersion estimates
+plotDispEsts(dds, main="DESeq2")
+```
+
+
+#Plot counts
+
+This is to examine the counts of reads for a single gene across the groups. `plotCounts()` normalizes counts by sequencing depth and adds a pseudocount of 1/2 to allow for log scale plotting. 
+```{r}
+plotCounts(dds, gene=which.min(res$padj),intgroup = "condition")
+
+```
+
+Blind dispersion estimation
+```{r}
+rld <- rlog(dds,blind=FALSE)
+vsd <- varianceStabilizingTransformation(dds,blind=FALSE)
+vsd.fast <- vst(dds,blind=FALSE)
+head(assay(rld),3)
+head(assay(vsd),3)
+head(assay(vsd.fast),3)
+
+
+```
+
+## Heatmap of the count matrix
+
+```{r}
+library("pheatmap")
+select <- order(rowMeans(counts(dds,normalized=TRUE)),decreasing =TRUE)[1:20]
+nt <- normTransform(dds) #defaults to log2(x+1)
+log2.norm.counts <- assay(nt)[select,]
+df <- data.frame("condition" = c(rep("WT",2),rep("KO",2)))
+rownames(df) <- meta$id
+pheatmap(log2.norm.counts,cluster_rows = FALSE,show_rownames = FALSE,cluster_cols = FALSE,annotation_col =df)
+pheatmap(assay(rld)[select,],cluster_rows = FALSE,show_rownames = FALSE,cluster_cols = FALSE,annotation_col =df)
+pheatmap(assay(vsd)[select,],cluster_rows = FALSE,show_rownames = FALSE,cluster_cols = FALSE,annotation_col =df)
+
+```
+
+??? Not sure how to do it
+```{r}
+select.padj <- order(res$padj,res$log2FoldChange)[1:50]
+
+df <- data.frame("condition" = c(rep("WT",2),rep("KO",2)))
+rownames(df) <- meta$id
+
+pheatmap(assay(vsd)[select.padj,],cluster_rows = FALSE,show_rownames = FALSE,cluster_cols = FALSE,annotation_col =df)
+
+```
+
+```{r}
+sampleDists <- dist(t(assay(rld)))
+```
+
+```{r}
+library("RColorBrewer")
+sampleDistMatrix <- as.matrix(sampleDists)
+rownames(sampleDistMatrix) <- paste(rld$condition,rld$id)
+colnames(sampleDistMatrix) <- NULL
+colors <- colorRampPalette(rev(brewer.pal(9,"Blues")))(100)
+pheatmap(sampleDistMatrix,
+         clustering_distance_rows = sampleDists,
+         clustering_distance_cols = sampleDists,
+         col=colors)
+```
+
+PCA plot
+```{r}
+plotPCA(rld,intgroup = "condition")
+```
+
+
+
+
+```{r}
+library(ggplot2)
+data <- plotPCA(rld, intgroup="condition", returnData=TRUE)
+percentVar <- round(100 * attr(data, "percentVar"))
+ggplot(data, aes(PC1, PC2, color=condition)) +
+    geom_point(size=3) +
+    xlab(paste0("PC1: ",percentVar[1],"% variance")) 
+    ylab(paste0("PC2: ",percentVar[2],"% variance"))
+```
+
+
+```{r}
+library(org.Mm.eg.db)
+library("AnnotationDbi")
+```
+
+```{r}
+columns(org.Mm.eg.db)
+```
+```{r}
+res$entrez <-unname(mapIds(org.Mm.eg.db, rownames(res), "ENTREZID", "SYMBOL"))
+res$ensembl <- unname(mapIds(org.Mm.eg.db, rownames(res), "ENSEMBL", "SYMBOL"))
+```
+```{r}
+head(res)
+```
+```{r}
+resOrdered <- res[order(res$pvalue),]
+head(resOrdered)
+```
+
+```{r}
+write.csv(as.data.frame(resOrdered), file="results.csv")
+```
+
+heatmap for gene clustering
+```{r}
+library("genefilter")
+topVarGenes <- head(order(rowVars(assay(rld)), decreasing = TRUE), 100)
+
+```
+
+```{r}
+library("gplots")
+```
+
+
+```{r}
+#head(rownames(resOrdered))
+LFCvsdup <- subset(assay(vsd), rownames(assay(vsd)) %in% rownames(resAdjSig05up))
+LFCvsddown <- subset(assay(vsd), rownames(assay(vsd)) %in% rownames(resAdjSig05down))
+
+
+LFCtopVarGenesup <- head(order(rowVars(LFCvsdup),decreasing=TRUE),40)
+LFCtopVarGenesdown <- head(order(rowVars(LFCvsddown), decreasing = TRUE),67)
+
+#Heatmap for topVarGenes from resAdjSig05up
+heatmap.2(LFCvsdup[LFCtopVarGenesup,], scale = "row", trace = "none", dendrogram = "column",
+col = colorRampPalette(rev(brewer.pal(9, "RdBu")))(255))
+
+heatmap.2(LFCvsddown[LFCtopVarGenesdown,], scale = "row", trace = "none", dendrogram = "column",Colv=FALSE,
+col = colorRampPalette(rev(brewer.pal(9, "RdBu")))(255),labRow = rownames(LFCvsddown)[LFCtopVarGenesdown])
+```
+
+```{r}
+pheatmap(LFCvsdup[LFCtopVarGenesup,],scale = "row",clustering_distance_rows = "correlation",cluster_rows = FALSE,show_rownames = TRUE,cluster_cols = FALSE,annotation_col =df)
+```
+
+
+
+## GSEA with `gage` package
+```{r}
+library(gage)
+library(pathview)
+
+```
+
+```{r}
+library(gageData)
+data("kegg.sets.mm")
+data(sigmet.idx.mm)
+```
+
+```{r}
+kegg.sets.M=kegg.sets.mm[sigmet.idx.mm]
+head(kegg.sets.mm,3)
+```
+
+```{r}
+foldchanges <-  res$log2FoldChange
+names(foldchanges) <- res$entrez
+head(foldchanges)
+```
+
+
+
+```{r}
+keggres = gage(foldchanges,gsets = kegg.sets.mm)
+attributes(keggres)
+```
+```{r}
+keggl <- keggres$less
+keggs <- keggres$stats
+```
+
+```{r}
+lapply(keggres,head)
+```
+```{r}
+keggrespathways <- data.frame(id=rownames(keggres$greater,keggres$greater %>% tbl_df() %>% filter(row_number()<=5 %>% .$id %>% as.character())))
+keggrespathways
+```
+
+
+```{r}
+keggresids <- substr(keggrespathways$id,start=1,stop=8)
+head(keggresids)
+```
+
+??
+```{r}
+#plot_pathway <- function(pid) pathview(gene.data = foldchanges,pathway.id = pid, species = "mm")
+#tmp <- sapply(keggresids,function(pid) pathview(gene.data = foldchanges,pathway.id = pid,species="mm"))
+```
+
+
+## GO analysis
+
+```{r}
+data("go.sets.mm")
+data("go.subs.mm")
+gobpsets <- go.sets.mm[go.subs.mm$BP]
+gobpres <- gage(foldchanges,gsets = gobpsets,same.dir = TRUE)
+lapply(gobpres,head)
+```
+
+```{r}
+gobprespathways <- data.frame(id=rownames(gobpres$greater,gobpres$greater %>% tbl_df() %>% filter(row_number()<=5 %>% .$id %>% as.character())))
+gobprespathways
+
+```
+
+```{r}
+gobpresterm <- substr(gobprespathways$id,12,100)
+head(gobpresterm)
+```
+
+
+
+
+
+
+
+```{r}
+#keggrld <- assay(rld)
+head(keggrld)
+geneData(genes = keggresids, exprs = assay(rld)[], outname = outname,txt=T, heatmap = T,limit = 3,scartterplot=TRUE)
+```
+
+```{r}
+#gobprespathways$id[1]
+```
+
+
+```{r}
+#for (gs in gobprespathways$greater){
+  #outname=gsub(" |:|/","_",substr(gs,12,100))
+  #geneData(genes = kegg.sets.mm[[gs]], exprs = assay(rld), outname=outname,txt=T,heatmap=T,limit = 3,scatterplot = T)
+#}
+
+```
+
+
+```{r}
+#assay(rld)
+#keggresids
+```
+
