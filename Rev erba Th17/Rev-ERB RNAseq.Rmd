@@ -327,14 +327,10 @@ head(gobpresterm)
 
 
 
-
-
-
-
 ```{r}
 #keggrld <- assay(rld)
-head(keggrld)
-geneData(genes = keggresids, exprs = assay(rld)[], outname = outname,txt=T, heatmap = T,limit = 3,scartterplot=TRUE)
+#head(keggrld)
+#geneData(genes = keggresids, exprs = assay(rld)[], outname = outname,txt=T, heatmap = T,limit = 3,scartterplot=TRUE)
 ```
 
 ```{r}
