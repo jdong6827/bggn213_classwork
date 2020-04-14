@@ -288,7 +288,7 @@ lapply(keggres,head)
 ```
 ```{r}
 keggrespathways <- data.frame(id=rownames(keggres$greater,keggres$greater %>% tbl_df() %>% filter(row_number()<=5 %>% .$id %>% as.character())))
-keggrespathways
+head(keggrespathways,20)
 ```
 
 
@@ -311,18 +311,18 @@ data("go.sets.mm")
 data("go.subs.mm")
 gobpsets <- go.sets.mm[go.subs.mm$BP]
 gobpres <- gage(foldchanges,gsets = gobpsets,same.dir = TRUE)
-lapply(gobpres,head)
+lapply(gobpres,head,10)
 ```
 
 ```{r}
 gobprespathways <- data.frame(id=rownames(gobpres$greater,gobpres$greater %>% tbl_df() %>% filter(row_number()<=5 %>% .$id %>% as.character())))
-gobprespathways
+head(gobprespathways,20)
 
 ```
 
 ```{r}
 gobpresterm <- substr(gobprespathways$id,12,100)
-head(gobpresterm)
+head(gobpresterm,20)
 ```
 
 

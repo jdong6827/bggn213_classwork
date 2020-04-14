@@ -2,30 +2,45 @@
 title: "Rev-Erba in Th17 RNA-seq Practice"
 output: github_document
 ---
-## This is the RNA-seq data from Rev-ERBa Th17 paper published on Cell Reports.
+#### This is a demo analysis for the RNA-seq data from Amir et al., 2018, Cell Reports 25, 3733–3749.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+In this work, we use REV-ERBa WT versus KO RNA-seq from Th17 cells [GEO: GSE122726](https://ftp.ncbi.nlm.nih.gov/geo/series/GSE122nnn/GSE122726/suppl/GSE122726_processed_218.xlsx)
+There're two biological replicates for each genotypes in this experiment.
 
+
+#### 1. Load `DESeq2` package for differential gene expresion analysis.
 ```{r}
 library(DESeq2)
 library(dplyr)
 ```
 
-load count data from GEO database
+
+#### 2. DESeq2 Required Inputs
+As input, the DESeq2 package expects **(1)** a data.frame of **count data** (as obtained from RNA-seq or another high-throughput sequencing experiment) and **(2)** a second data.frame with information about the samples - often called sample metadata (or `colData` in DESeq2-speak because it supplies metadata/information about the columns of the countData matrix). 
+
+#### 3. Load count data from GEO database
+**Note**: The count values must be raw counts of sequencing reads. This is important for **DESeq2**'s statistic model to hold.
+
 ```{r}
+# load count table 
 count<- read.csv("GSE122726 WTVSKO.csv",stringsAsFactors = FALSE,row.names = 1)
 rownames(count) <- gsub("\t", "", rownames(count))
 head(count)
 ```
 
-Tidy up the counts data to exclude `zero` value
+Some genes have **zero** read counts for all 4 samples. We tidy up the counts data to exclude genes with **zero** value.
 ```{r}
 filter.Count <- count[rowSums(count)!=0,]
 head(filter.Count)
 ```
+
+
+
+2. Import countData and colData
 
 Create a `meta` for metadata
 ```{r}
@@ -288,7 +303,7 @@ lapply(keggres,head)
 ```
 ```{r}
 keggrespathways <- data.frame(id=rownames(keggres$greater,keggres$greater %>% tbl_df() %>% filter(row_number()<=5 %>% .$id %>% as.character())))
-keggrespathways
+head(keggrespathways,20)
 ```
 
 
@@ -311,18 +326,18 @@ data("go.sets.mm")
 data("go.subs.mm")
 gobpsets <- go.sets.mm[go.subs.mm$BP]
 gobpres <- gage(foldchanges,gsets = gobpsets,same.dir = TRUE)
-lapply(gobpres,head)
+lapply(gobpres,head,10)
 ```
 
 ```{r}
 gobprespathways <- data.frame(id=rownames(gobpres$greater,gobpres$greater %>% tbl_df() %>% filter(row_number()<=5 %>% .$id %>% as.character())))
-gobprespathways
+head(gobprespathways,20)
 
 ```
 
 ```{r}
 gobpresterm <- substr(gobprespathways$id,12,100)
-head(gobpresterm)
+head(gobpresterm,20)
 ```
 
 
