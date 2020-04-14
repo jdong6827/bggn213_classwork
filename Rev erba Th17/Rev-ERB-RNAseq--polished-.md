@@ -1,7 +1,9 @@
 Rev-Erba in Th17 RNA-seq Practice
 ================
+Jiayi Dong
 
-#### This is a demo analysis for the RNA-seq data from Amir et al., 2018, Cell Reports 25, 3733–3749.
+This is a demo analysis for the RNA-seq data from Amir et al., 2018,
+Cell Reports 25, 3733–3749.
 
 In this work, we use REV-ERBa WT versus KO RNA-seq from Th17 cells [GEO:
 GSE122726](https://ftp.ncbi.nlm.nih.gov/geo/series/GSE122nnn/GSE122726/suppl/GSE122726_processed_218.xlsx)
